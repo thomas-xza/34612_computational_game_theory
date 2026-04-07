@@ -1,10 +1,10 @@
 
 using Pkg
 
-# Pkg.add(["XLSX", "DataFrames", "Plots", "StatsPlots", "StatsBase"])
+# Pkg.add(["XLSX", "DataFrames", "Plots", "StatsPlots", "StatsBase", "Colors"])
 
 using XLSX
-using Plots, StatsPlots, DataFrames, StatsBase
+using Plots, StatsPlots, DataFrames, StatsBase, Colors
 
 
 function main()
@@ -70,30 +70,57 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
     ##  The above is generic to the dataframe as a whole, before splitting.
 
     n = 25
-    col_to_plot = "Leader's Price"
+
+    r, g, b = 0, 0, 0
 
     plot_df = DataFrame()
+
+    for target in ["Leader", "Follower"]
     
-    for (i, start_idx) in enumerate(1:n:nrow(df_full))
+        col_to_plot = "$target's Price"
         
-        end_idx = min(start_idx + n - 1, nrow(df_full))
-        
-        row_set = df_full[start_idx:end_idx, col_to_plot]
-        
-        h = fit(Histogram, row_set, edges)
-        
-        centers = [ (edges[j] + edges[j+1]) / 2 for j in 1:length(h.weights) ]
-        
-        # Append to our plotting DataFrame
-        temp_df = DataFrame(
-            bin_center = centers,
-            counts = h.weights,
-            set_label = "Rows $start_idx-$end_idx"
-        )
-        append!(plot_df, temp_df)
-        
+        for (i, start_idx) in enumerate(1:n:nrow(df_full))
+            
+            end_idx = min(start_idx + n - 1, nrow(df_full))
+            
+            row_set = df_full[start_idx:end_idx, col_to_plot]
+            
+            h = fit(Histogram, row_set, edges)
+            
+            centers = [ (edges[j] + edges[j+1]) / 2 for j in 1:length(h.weights) ]
+
+            if target == "Leader"
+
+                r = 1
+
+            else
+                
+                r = 0
+
+            end
+
+            g += 0.1
+
+            b += 0.1
+
+            temp_df = DataFrame(
+                bin_center = centers,
+                counts = h.weights,
+                set_label = "Date $start_idx-$end_idx, $target",
+                set_colour = RGB(r, g, b)
+            )
+            append!(plot_df, temp_df)
+            
+        end
+
     end
 
+    plot_df.set_colour = parse.(Colorant, plot_df.set_colour)
+
+    unique_data = unique(plot_df[!, [:set_label, :set_colour]])
+    group_labels = unique_data.set_label
+    group_colors = unique_data.set_colour
+    
     println(plot_df)
 
     # 3. Plot side-by-side using groupedbar
@@ -101,6 +128,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         plot_df.bin_center, 
         plot_df.counts, 
         group = plot_df.set_label,
+        color = reshape(group_colors, 1, :),
         xlabel = "Value Bin",
         ylabel = "Frequency",
         title = "Comparison of Row Sets (Size $n)",
