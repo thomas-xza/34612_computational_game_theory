@@ -28,7 +28,7 @@ end
 
 function plot_distrib_charts_by_time_outer_loop(res)
         
-    step_set = [0.05, 0.2, 0.4]
+    step_set = [0.05, 0.05, 0.4]
 
     for (i, df) in enumerate(res)
 
@@ -85,7 +85,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         
         for (i, start_idx) in enumerate(1:n:nrow(df_full))
 
-            g = 0.1 * i
+            g = 0.2 * i
 
             b = 0.1 * i
 
