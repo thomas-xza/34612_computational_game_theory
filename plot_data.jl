@@ -55,7 +55,7 @@ function plot_distrib_charts(res)
         gb = groupedbar(labels,
                         [h1 h2], 
                         label = ["Leader" "Follower"],
-                        title = "Price Distribution Comparison",
+                        title = "Price distributions, MK$i",
                         xlabel = "Price Interval",
                         ylabel = "Frequency",
                         xtickfont = 4, 
