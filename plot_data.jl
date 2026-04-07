@@ -21,7 +21,7 @@ function main()
 
     end
 
-    
+    plot_line_charts(res)
 
 end
 
@@ -30,7 +30,7 @@ function plot_line_charts(res)
 
     for (i, df) in enumerate(res)
 
-        plot(df[!, "Date"], df[!, "Leader's Price"], 
+        p = plot(df[!, "Date"], df[!, "Leader's Price"], 
              label = "Leader", 
              xlabel = "Date", 
              ylabel = "Price", 
@@ -38,12 +38,14 @@ function plot_line_charts(res)
              linewidth = 2)
 
         # 2. Add the second line to the same plot
-        plot!(df[!, "Date"], df[!, "Follower's Price"], 
+        plot!(p,
+              df[!, "Date"],
+              df[!, "Follower's Price"], 
               label = "Follower", 
               linewidth = 2,
               linestyle = :dash)
  
-        savefig(h, "lines_$i.pdf")
+        savefig(p, "lines_$i.pdf")
 
     end    
 
