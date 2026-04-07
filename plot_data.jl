@@ -29,7 +29,11 @@ function plot_distrib_charts(res)
 
     for (i, df) in enumerate(res)
 
+        step = 0.025
+
         absolute_min = min(minimum(df[!, "Leader's Price"]), minimum(df[!, "Follower's Price"]))
+
+        floor_min = floor(absolute_min / step) * step
 
         absolute_max = max(maximum(df[!, "Leader's Price"]), maximum(df[!, "Follower's Price"]))
 
@@ -39,9 +43,9 @@ function plot_distrib_charts(res)
 
         end
 
-        interval = 0.025
+        floor_max = floor(absolute_max / step) * step
 
-        edges = (absolute_min:interval:absolute_max)
+        edges = (floor_min:step:floor_max)
 
         h1 = fit(Histogram, df[!, "Leader's Price"], edges).weights
         h2 = fit(Histogram, df[!, "Follower's Price"], edges).weights
