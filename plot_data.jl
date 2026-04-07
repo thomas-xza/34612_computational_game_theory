@@ -75,7 +75,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
 
     reds = Dict("Leader" => 1, "Follower" => 0)
 
-    for target in ["Leader", "Follower"]
+    for target in ["Leader" ] #, "Follower"]
     
         r, g, b = reds[target], 0, 0
 
@@ -112,20 +112,25 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
     unique_data = unique(plot_df[!, [:set_label, :set_colour]])
     group_labels = unique_data.set_label
     group_colors = unique_data.set_colour
+
+    println(group_labels)
     
-    println(plot_df)
+    println(group_colors)
+    
+    # println(plot_df)
 
     # 3. Plot side-by-side using groupedbar
     gb = groupedbar(
         plot_df.bin_center, 
         plot_df.counts, 
         group = plot_df.set_label,
-        color = reshape(group_colors, 1, :),
+        color = plot_df.set_colour,
         xlabel = "Price",
         ylabel = "Frequency",
         title = "Distribution over time (of size $n)",
         legend = :outertopright
-    )        
+    )
+    
     savefig(gb, "price_distribs_split_mk$file_prefix.pdf")
 
 end
