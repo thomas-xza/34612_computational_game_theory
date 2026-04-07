@@ -21,12 +21,18 @@ function main()
 
     end
 
+    ranges = [
+        (0.2:0.05:0.7),
+        (-3:0.25:1),
+        (-2:0.05:-1)
+    ]
+
     for (i, df) in enumerate(res)
  
         transform!(df, ["Leader's Price", "Follower's Price"] => ((lp, fp) -> lp .- fp) => "Diff")
 
         h = histogram(df[!, "Diff"],
-                      bins=128,
+                      bins=ranges[i],
                       title="Difference between leader and follower price",
                       xlabel="Price interval",
                       ylabel="Frequency")
