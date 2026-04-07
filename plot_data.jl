@@ -28,7 +28,7 @@ end
 
 function plot_line_charts(res)
 
-    max_y_lims = [:auto, 3.5, :auto]
+    max_y_lims = [:auto, (:auto, 3.5), :auto]
 
     for (i, df) in enumerate(res)
 
