@@ -1,11 +1,10 @@
 
 using Pkg
 
-##  Pkg.add(["XLSX", "DataFrames", "Plots"])
+Pkg.add(["XLSX", "DataFrames", "Plots", "StatsPlots", "StatsBase"])
 
 using XLSX
-using Plots, DataFrames
-
+using Plots, StatsPlots, DataFrames, StatsBase
 
 function main()
 
@@ -21,7 +20,37 @@ function main()
 
     end
 
-    plot_line_charts(res)
+    plot_distrib_charts(res)
+
+end
+
+
+function plot_distrib_charts(res)
+
+    edges_set = [
+        (1:0.125:2),
+        (1:0.05:3.25),
+        (-2:0.05:2)
+    ]
+
+    for (i, df) in enumerate(res)
+
+        h1 = fit(Histogram, df[!, "Leader's Price"], edges_set[i]).weights
+        h2 = fit(Histogram, df[!, "Follower's Price"], edges_set[i]).weights
+
+        labels = ["$i-$(i+20)" for i in edges_set[i][1:end-1]]
+
+        gb = groupedbar(labels,
+                        [h1 h2], 
+                        label = ["Leader" "Follower"],
+                        title = "Price Distribution Comparison",
+                        xlabel = "Price Interval",
+                        ylabel = "Frequency",
+                        bar_width = 0.7)
+ 
+        savefig(gb, "price_distribs_mk$i.pdf")
+
+    end
 
 end
 
