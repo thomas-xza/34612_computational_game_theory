@@ -28,9 +28,9 @@ end
 function plot_distrib_charts(res)
 
     edges_set = [
-        (1:0.125:2),
+        (1:0.05:2),
         (1:0.05:3.25),
-        (-2:0.05:2)
+        (-2:0.05:4)
     ]
 
     for (i, df) in enumerate(res)
@@ -46,7 +46,10 @@ function plot_distrib_charts(res)
                         title = "Price Distribution Comparison",
                         xlabel = "Price Interval",
                         ylabel = "Frequency",
-                        bar_width = 0.7)
+                        xtickfont = 4, 
+                        xrotation = 90
+                        )
+                        # bar_width = 0.7)
  
         savefig(gb, "price_distribs_mk$i.pdf")
 
