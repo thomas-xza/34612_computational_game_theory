@@ -77,7 +77,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
 
     reds = Dict("Leader" => 1, "Follower" => 0)
 
-    for target in ["Leader" ] #, "Follower"]
+    for target in ["Leader", "Follower"]
     
         r, g, b = reds[target], 0, 0
 
@@ -127,7 +127,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         plot_df.counts, 
         group = plot_df.set_label,
         color = plot_df.set_colour,
-        xlabel = "Price",
+        xlabel = "Price interval",
         ylabel = "Frequency",
         title = "Distribution over time (of size $n)",
         legend = :outertopright
