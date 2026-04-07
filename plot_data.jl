@@ -28,7 +28,7 @@ end
 
 function plot_distrib_charts_by_time_outer_loop(res)
         
-    step_set = [0.2, 0.2, 0.1]
+    step_set = [0.2, 0.4, 0.1]
 
     for (i, df) in enumerate(res)
 
