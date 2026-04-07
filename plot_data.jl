@@ -43,9 +43,10 @@ function plot_line_charts(res)
               df[!, "Follower's Price"], 
               label = "Follower", 
               linewidth = 2,
-              linestyle = :dash)
+              ylims = (:auto, 5)
+              )
  
-        savefig(p, "lines_$i.pdf")
+        savefig(p, "lines_mk$i.pdf")
 
     end    
 
