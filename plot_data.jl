@@ -86,7 +86,8 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
                     xlabel = "Price Interval",
                     ylabel = "Frequency",
                     xtickfont = 4, 
-                    xrotation = 90
+                    xrotation = 90,
+                    bar_position = :dodge
                     )
         
     end
