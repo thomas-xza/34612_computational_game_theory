@@ -28,7 +28,7 @@ end
 
 function plot_distrib_charts_by_time_outer_loop(res)
         
-    step_set = [0.75, 0.3, 0.3]
+    step_set = [0.6, 0.25, 0.25]
 
     for (i, df) in enumerate(res)
 
@@ -119,6 +119,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         plot_df.counts, 
         group = plot_df.set_label,
         color = plot_df.set_colour,
+        bar_position = :stack,
         xlabel = "Price intervals",
         ylabel = "Frequency",
         title = "Distribution over time (of size $n)",
