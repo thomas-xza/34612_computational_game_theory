@@ -71,21 +71,13 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
 
     n = 25
 
-    r, g, b = 0, 0, 0
-
     plot_df = DataFrame()
+
+    reds = Dict("Leader" => 1, "Follower" => 0)
 
     for target in ["Leader", "Follower"]
     
-        if target == "Leader"
-
-            r = 1
-
-        else
-            
-            r = 0
-
-        end
+        r, g, b = reds[target], 0, 0
 
         col_to_plot = "$target's Price"
         
