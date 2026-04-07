@@ -49,7 +49,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
                ylabel = "Frequency",
                bar_width = 0.7)
     
-    step = 0.025
+    step = 0.1
 
     absolute_min = min(minimum(df_full[!, "Leader's Price"]), minimum(df_full[!, "Follower's Price"]))
 
