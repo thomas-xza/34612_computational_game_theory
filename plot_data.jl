@@ -28,6 +28,8 @@ end
 
 function plot_line_charts(res)
 
+    max_y_lims = [:auto, 3.5, :auto]
+
     for (i, df) in enumerate(res)
 
         p = plot(df[!, "Date"], df[!, "Leader's Price"], 
@@ -43,7 +45,7 @@ function plot_line_charts(res)
               df[!, "Follower's Price"], 
               label = "Follower", 
               linewidth = 2,
-              ylims = (:auto, 5)
+              ylims = max_y_lims[i]
               )
  
         savefig(p, "lines_mk$i.pdf")
