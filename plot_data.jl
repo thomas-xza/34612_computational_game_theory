@@ -1,7 +1,7 @@
 
 using Pkg
 
-Pkg.add(["XLSX", "DataFrames", "Plots", "StatsPlots", "StatsBase"])
+# Pkg.add(["XLSX", "DataFrames", "Plots", "StatsPlots", "StatsBase"])
 
 using XLSX
 using Plots, StatsPlots, DataFrames, StatsBase
@@ -20,12 +20,33 @@ function main()
 
     end
 
-    plot_distrib_charts(res)
+    time_based_dfs = split_df_by_time(res)
+
+    plot_distrib_charts(res, "")
 
 end
 
 
-function plot_distrib_charts(res)
+function split_df_by_time(res)
+
+    df_subsets = Vector{Vector{DataFrame}}()
+
+    n = 25
+
+    for (i, df) in enumerate(res)
+
+        split_dfs = [DataFrame(row_group) for row_group in Iterators.partition(eachrow(df), n)]
+
+        push!(df_subsets, split_dfs)
+
+    end
+
+    return df_subsets
+
+end
+
+
+function plot_distrib_charts(res, file_prefix)
 
     for (i, df) in enumerate(res)
 
@@ -63,7 +84,7 @@ function plot_distrib_charts(res)
                         )
                         # bar_width = 0.7)
  
-        savefig(gb, "price_distribs_mk$i.pdf")
+        savefig(gb, "price_distribs_mk$file_prefix$i.pdf")
 
     end
 
