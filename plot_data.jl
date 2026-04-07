@@ -94,6 +94,8 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         
     end
 
+    println(plot_df)
+
     # 3. Plot side-by-side using groupedbar
     gb = groupedbar(
         plot_df.bin_center, 
@@ -102,7 +104,6 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         xlabel = "Value Bin",
         ylabel = "Frequency",
         title = "Comparison of Row Sets (Size $n)",
-        bar_width = 0.6,
         legend = :outertopright
     )        
     savefig(gb, "price_distribs_split_mk$file_prefix.pdf")
