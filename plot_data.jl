@@ -32,6 +32,8 @@ function plot_line_charts(res)
 
     for (i, df) in enumerate(res)
 
+        transform!(df, ["Leader's Price", "Follower's Price"] => ((lp, fp) -> lp .- fp) => "Diff")
+        
         p = plot(df[!, "Date"], df[!, "Leader's Price"], 
              label = "Leader", 
              xlabel = "Date", 
@@ -44,6 +46,14 @@ function plot_line_charts(res)
               df[!, "Date"],
               df[!, "Follower's Price"], 
               label = "Follower", 
+              linewidth = 2,
+              ylims = max_y_lims[i]
+              )
+ 
+        plot!(p,
+              df[!, "Date"],
+              df[!, "Diff"], 
+              label = "Difference", 
               linewidth = 2,
               ylims = max_y_lims[i]
               )
