@@ -1,7 +1,7 @@
 
 using Pkg
 
- # Pkg.add(["XLSX", "DataFrames", "Plots"])
+##  Pkg.add(["XLSX", "DataFrames", "Plots"])
 
 using XLSX
 using Plots, DataFrames
@@ -25,7 +25,11 @@ function main()
  
         transform!(df, ["Leader's Price", "Follower's Price"] => ((lp, fp) -> lp .- fp) => "Diff")
 
-        h = histogram(df[!, "Diff"], bins=32, title="Distribution of Scores", xlabel="Interval", ylabel="Frequency")
+        h = histogram(df[!, "Diff"],
+                      bins=64,
+                      title="Difference between leader and follower price",
+                      xlabel="Price interval",
+                      ylabel="Frequency")
 
         savefig(h, "hist_$i.pdf")
 
