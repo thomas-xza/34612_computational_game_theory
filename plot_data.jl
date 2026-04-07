@@ -26,7 +26,7 @@ function main()
         transform!(df, ["Leader's Price", "Follower's Price"] => ((lp, fp) -> lp .- fp) => "Diff")
 
         h = histogram(df[!, "Diff"],
-                      bins=64,
+                      bins=128,
                       title="Difference between leader and follower price",
                       xlabel="Price interval",
                       ylabel="Frequency")
