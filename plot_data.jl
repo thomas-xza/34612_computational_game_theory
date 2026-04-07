@@ -48,7 +48,7 @@ function plot_line_charts(res)
               ylims = max_y_lims[i]
               )
  
-        savefig(p, "lines_mk$i.pdf")
+        savefig(p, "lines_changes_time_mk$i.pdf")
 
     end    
 
