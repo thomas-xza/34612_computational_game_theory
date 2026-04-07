@@ -33,15 +33,20 @@ function plot_distrib_charts(res)
 
         absolute_max = max(maximum(df[!, "Leader's Price"]), maximum(df[!, "Follower's Price"]))
 
-        edges = (absolute_min:0.05:absolute_max)
+        if i == 2
+
+            absolute_max = 3.25
+
+        end
+
+        edges = (absolute_min:0.025:absolute_max)
 
         h1 = fit(Histogram, df[!, "Leader's Price"], edges).weights
         h2 = fit(Histogram, df[!, "Follower's Price"], edges).weights
 
-        labels = ["$i-$(i+20)" for i in edges[1:end-1]]
+        # labels = ["$i-$(i+20)" for i in edges[1:end-1]]
 
-        gb = groupedbar(labels,
-                        [h1 h2], 
+        gb = groupedbar([h1 h2], 
                         label = ["Leader" "Follower"],
                         title = "Price Distribution Comparison",
                         xlabel = "Price Interval",
