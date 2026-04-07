@@ -28,8 +28,6 @@ end
 
 function plot_distrib_charts_by_time_outer_loop(res)
         
-    time_based_dfs = split_df_by_time(res)
-
     for (i, df) in enumerate(res)
 
         println(i)
@@ -43,11 +41,9 @@ end
 
 function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String)
 
-    df_subset = split_df_by_time(df_full)
-
-    gb = groupedbar(String[], 
+    gb = groupedbar(String[],
                zeros(0, 2), 
-               label = ["Leader" "Follower"], 
+               label = ["Leader" "Follower"],
                title = "Price Distributions",
                xlabel = "Intervals",
                ylabel = "Frequency",
@@ -71,35 +67,50 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
 
     edges = (floor_min:step:floor_max)
 
-    for (i, df_portion) in enumerate(df_subset)
+    ##  The above is generic to the dataframe as a whole, before splitting.
 
-        h1 = fit(Histogram, df_portion[!, "Leader's Price"], edges).weights
-        h2 = fit(Histogram, df_portion[!, "Follower's Price"], edges).weights
+    n = 25
+    col_to_plot = "Leader's Price"
 
-        labels = ["$i" for i in edges[1:end-1]]
-
-        groupedbar!(gb,
-                    labels,
-                    [h1 h2], 
-                    label = ["Leader" "Follower"],
-                    title = "Price distributions, MK$i",
-                    xlabel = "Price Interval",
-                    ylabel = "Frequency",
-                    xtickfont = 4, 
-                    xrotation = 90,
-                    bar_position = :dodge
-                    )
+    plot_df = DataFrame()
+    
+    for (i, start_idx) in enumerate(1:n:nrow(df_full))
+        
+        end_idx = min(start_idx + n - 1, nrow(df_full))
+        
+        row_set = df_full[start_idx:end_idx, col_to_plot]
+        
+        h = fit(Histogram, row_set, edges)
+        
+        centers = [ (edges[j] + edges[j+1]) / 2 for j in 1:length(h.weights) ]
+        
+        # Append to our plotting DataFrame
+        temp_df = DataFrame(
+            bin_center = centers,
+            counts = h.weights,
+            set_label = "Rows $start_idx-$end_idx"
+        )
+        append!(plot_df, temp_df)
         
     end
 
+    # 3. Plot side-by-side using groupedbar
+    gb = groupedbar(
+        plot_df.bin_center, 
+        plot_df.counts, 
+        group = plot_df.set_label,
+        xlabel = "Value Bin",
+        ylabel = "Frequency",
+        title = "Comparison of Row Sets (Size $n)",
+        bar_width = 0.6,
+        legend = :outertopright
+    )        
     savefig(gb, "price_distribs_split_mk$file_prefix.pdf")
 
 end
 
 
-function split_df_by_time(df)
-
-    n = 25
+function split_df_by_time(df, n)
 
     split_dfs = [DataFrame(row_group) for row_group in Iterators.partition(eachrow(df), n)]
 
