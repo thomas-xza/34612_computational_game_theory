@@ -51,6 +51,8 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
     
     step = 0.1
 
+    step_set = [0.1, 0.2, 0.4
+
     absolute_min = min(minimum(df_full[!, "Leader's Price"]), minimum(df_full[!, "Follower's Price"]))
 
     floor_min = floor(absolute_min / step) * step
@@ -77,10 +79,24 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
 
     for target in ["Leader", "Follower"]
     
+        if target == "Leader"
+
+            r = 1
+
+        else
+            
+            r = 0
+
+        end
+
         col_to_plot = "$target's Price"
         
         for (i, start_idx) in enumerate(1:n:nrow(df_full))
             
+            g = 0.1 * i
+
+            b = 0.1 * i
+
             end_idx = min(start_idx + n - 1, nrow(df_full))
             
             row_set = df_full[start_idx:end_idx, col_to_plot]
@@ -88,21 +104,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
             h = fit(Histogram, row_set, edges)
             
             centers = [ (edges[j] + edges[j+1]) / 2 for j in 1:length(h.weights) ]
-
-            if target == "Leader"
-
-                r = 1
-
-            else
-                
-                r = 0
-
-            end
-
-            g += 0.1
-
-            b += 0.1
-
+            
             temp_df = DataFrame(
                 bin_center = centers,
                 counts = h.weights,
@@ -129,9 +131,9 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         plot_df.counts, 
         group = plot_df.set_label,
         color = reshape(group_colors, 1, :),
-        xlabel = "Value Bin",
+        xlabel = "Price",
         ylabel = "Frequency",
-        title = "Comparison of Row Sets (Size $n)",
+        title = "Distribution over time (of size $n)",
         legend = :outertopright
     )        
     savefig(gb, "price_distribs_split_mk$file_prefix.pdf")
