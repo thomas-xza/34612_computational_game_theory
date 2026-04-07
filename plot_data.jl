@@ -48,7 +48,8 @@ function plot_distrib_charts(res)
 
         labels = ["$i" for i in edges[1:end-1]]
 
-        gb = groupedbar([h1 h2], 
+        gb = groupedbar(labels,
+                        [h1 h2], 
                         label = ["Leader" "Follower"],
                         title = "Price Distribution Comparison",
                         xlabel = "Price Interval",
