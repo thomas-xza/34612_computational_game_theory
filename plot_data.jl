@@ -122,6 +122,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         xlabel = "Price interval",
         ylabel = "Frequency",
         title = "Distribution over time (of size $n)",
+        bar_width = 1,
         legend = :outertopright
     )
     
