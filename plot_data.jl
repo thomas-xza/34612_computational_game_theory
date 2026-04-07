@@ -28,9 +28,7 @@ end
 
 function plot_line_charts(res)
 
-    max_y_lims = [:auto, (:auto, 3.5), :auto]
-
-    max_y_diff_lims = [:auto, (-2, :auto), :auto]
+    max_y_lims = [:auto, (-2, 3.5), :auto]
 
     for (i, df) in enumerate(res)
 
@@ -57,7 +55,7 @@ function plot_line_charts(res)
               df[!, "Diff"], 
               label = "Difference", 
               linewidth = 2,
-              ylims = max_y_diff_lims[i]
+              ylims = max_y_lims[i]
               )
  
         savefig(p, "lines_changes_time_mk$i.pdf")
