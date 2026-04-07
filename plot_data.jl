@@ -27,18 +27,18 @@ end
 
 function plot_distrib_charts(res)
 
-    edges_set = [
-        (1:0.05:2),
-        (1:0.05:3.25),
-        (-2:0.05:4)
-    ]
-
     for (i, df) in enumerate(res)
 
-        h1 = fit(Histogram, df[!, "Leader's Price"], edges_set[i]).weights
-        h2 = fit(Histogram, df[!, "Follower's Price"], edges_set[i]).weights
+        absolute_min = min(minimum(df[!, "Leader's Price"]), minimum(df[!, "Follower's Price"]))
 
-        labels = ["$i-$(i+20)" for i in edges_set[i][1:end-1]]
+        absolute_max = max(maximum(df[!, "Leader's Price"]), maximum(df[!, "Follower's Price"]))
+
+        edges = (absolute_min:0.05:absolute_max)
+
+        h1 = fit(Histogram, df[!, "Leader's Price"], edges).weights
+        h2 = fit(Histogram, df[!, "Follower's Price"], edges).weights
+
+        labels = ["$i-$(i+20)" for i in edges[1:end-1]]
 
         gb = groupedbar(labels,
                         [h1 h2], 
