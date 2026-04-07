@@ -28,18 +28,20 @@ end
 
 function plot_distrib_charts_by_time_outer_loop(res)
         
+    step_set = [0.1, 0.2, 0.4]
+
     for (i, df) in enumerate(res)
 
         println(i)
 
-        plot_distrib_charts_by_time(df, string(i))
+        plot_distrib_charts_by_time(df, string(i), step_set[i])
 
     end
 
 end
 
 
-function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String)
+function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String, step:: Float64)
 
     gb = groupedbar(String[],
                zeros(0, 2), 
@@ -49,10 +51,6 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
                ylabel = "Frequency",
                bar_width = 0.7)
     
-    step = 0.1
-
-    step_set = [0.1, 0.2, 0.4
-
     absolute_min = min(minimum(df_full[!, "Leader's Price"]), minimum(df_full[!, "Follower's Price"]))
 
     floor_min = floor(absolute_min / step) * step
@@ -92,7 +90,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         col_to_plot = "$target's Price"
         
         for (i, start_idx) in enumerate(1:n:nrow(df_full))
-            
+
             g = 0.1 * i
 
             b = 0.1 * i
