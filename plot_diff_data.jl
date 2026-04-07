@@ -21,37 +21,6 @@ function main()
 
     end
 
-    
-
-end
-
-
-function plot_line_charts(res)
-
-    for (i, df) in enumerate(res)
-
-        plot(df[!, "Date"], df[!, "Leader's Price"], 
-             label = "Leader", 
-             xlabel = "Date", 
-             ylabel = "Price", 
-             title = "Price changes over time",
-             linewidth = 2)
-
-        # 2. Add the second line to the same plot
-        plot!(df[!, "Date"], df[!, "Follower's Price"], 
-              label = "Follower", 
-              linewidth = 2,
-              linestyle = :dash)
- 
-        savefig(h, "lines_$i.pdf")
-
-    end    
-
-end
-
-
-function plot_diff_data(res)
-
     ranges = [
         (0.2:0.01:0.7),
         (-1.5:0.03:0.5),
