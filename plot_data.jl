@@ -28,7 +28,7 @@ end
 
 function plot_distrib_charts_by_time_outer_loop(res)
         
-    step_set = [0.1, 0.1, 0.1]
+    step_set = [0.2, 0.2, 0.1]
 
     for (i, df) in enumerate(res)
 
@@ -42,14 +42,6 @@ end
 
 
 function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String, step:: Float64)
-
-    gb = groupedbar(String[],
-               zeros(0, 2), 
-               label = ["Leader" "Follower"],
-               title = "Price Distributions",
-               xlabel = "Intervals",
-               ylabel = "Frequency",
-               bar_width = 0.7)
     
     absolute_min = min(minimum(df_full[!, "Leader's Price"]), minimum(df_full[!, "Follower's Price"]))
 
