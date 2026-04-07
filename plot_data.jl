@@ -28,7 +28,7 @@ end
 
 function plot_distrib_charts_by_time_outer_loop(res)
         
-    step_set = [0.1, 0.2, 0.4]
+    step_set = [0.05, 0.2, 0.4]
 
     for (i, df) in enumerate(res)
 
@@ -57,15 +57,17 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
 
     absolute_max = max(maximum(df_full[!, "Leader's Price"]), maximum(df_full[!, "Follower's Price"]))
 
+    println(absolute_max)
+
     if absolute_max > 25
 
         absolute_max = 3.25
 
     end
 
-    floor_max = floor(absolute_max / step) * step
+    ceil_max = ceil(absolute_max / step) * (step)
 
-    edges = (floor_min:step:floor_max)
+    edges = (floor_min:step:ceil_max)
 
     ##  The above is generic to the dataframe as a whole, before splitting.
 
@@ -117,7 +119,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
     
     println(group_colors)
     
-    # println(plot_df)
+    println(plot_df)
 
     # 3. Plot side-by-side using groupedbar
     gb = groupedbar(
