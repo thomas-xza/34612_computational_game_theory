@@ -6,6 +6,7 @@ using Pkg
 using XLSX
 using Plots, StatsPlots, DataFrames, StatsBase
 
+
 function main()
 
     res = DataFrame[]
@@ -20,28 +21,88 @@ function main()
 
     end
 
-    time_based_dfs = split_df_by_time(res)
-
-    plot_distrib_charts(res, "")
+    plot_distrib_charts_by_time_outer_loop(res)
 
 end
 
 
-function split_df_by_time(res)
-
-    df_subsets = Vector{Vector{DataFrame}}()
-
-    n = 25
+function plot_distrib_charts_by_time_outer_loop(res)
+        
+    time_based_dfs = split_df_by_time(res)
 
     for (i, df) in enumerate(res)
 
-        split_dfs = [DataFrame(row_group) for row_group in Iterators.partition(eachrow(df), n)]
+        println(i)
 
-        push!(df_subsets, split_dfs)
+        plot_distrib_charts_by_time(df, string(i))
 
     end
 
-    return df_subsets
+end
+
+
+function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String)
+
+    df_subset = split_df_by_time(df_full)
+
+    gb = groupedbar(String[], 
+               zeros(0, 2), 
+               label = ["Leader" "Follower"], 
+               title = "Price Distributions",
+               xlabel = "Intervals",
+               ylabel = "Frequency",
+               bar_width = 0.7)
+    
+    step = 0.025
+
+    absolute_min = min(minimum(df_full[!, "Leader's Price"]), minimum(df_full[!, "Follower's Price"]))
+
+    floor_min = floor(absolute_min / step) * step
+
+    absolute_max = max(maximum(df_full[!, "Leader's Price"]), maximum(df_full[!, "Follower's Price"]))
+
+    if absolute_max > 25
+
+        absolute_max = 3.25
+
+    end
+
+    floor_max = floor(absolute_max / step) * step
+
+    edges = (floor_min:step:floor_max)
+
+    for (i, df_portion) in enumerate(df_subset)
+
+        h1 = fit(Histogram, df_portion[!, "Leader's Price"], edges).weights
+        h2 = fit(Histogram, df_portion[!, "Follower's Price"], edges).weights
+
+        labels = ["$i" for i in edges[1:end-1]]
+
+        groupedbar!(gb,
+                    labels,
+                    [h1 h2], 
+                    label = ["Leader" "Follower"],
+                    title = "Price distributions, MK$i",
+                    xlabel = "Price Interval",
+                    ylabel = "Frequency",
+                    xtickfont = 4, 
+                    xrotation = 90
+                    )
+        
+    end
+
+    savefig(gb, "price_distribs_split_mk$file_prefix.pdf")
+
+end
+
+
+function split_df_by_time(df)
+
+    n = 25
+
+    split_dfs = [DataFrame(row_group) for row_group in Iterators.partition(eachrow(df), n)]
+
+    return split_dfs
 
 end
 
@@ -153,5 +214,6 @@ function plot_diff_data(res)
     end
 
 end
+
 
 main()
