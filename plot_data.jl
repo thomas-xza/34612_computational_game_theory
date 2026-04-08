@@ -35,13 +35,18 @@ function plot_prices_as_intervals(res)
     ]
 
     for (i, df) in enumerate(res)
- 
-        h = histogram(df[!, "Leader's Price"],
-                      # bins=ranges[i],
-                      xlabel="Price interval",
-                      ylabel="Frequency")
 
-        savefig(h, "hist_price_intervals_$i.pdf")
+        h_a = fit(Histogram, df[!, "Leader's Price"], nbins = 10)
+        h_b = fit(Histogram, df[!, "Follower's Price"], nbins = 10)
+
+        println("Column A Edges: ", h_a.edges[1])
+        println("Column A Counts: ", h_a.weights)
+
+        histogram(df[!, "Leader's Price"], bins=15, alpha=0.5, label="Leader's", color=:blue)
+        histogram!(df[!, "Follower's Price"], bins=15, alpha=0.5, label="Follower's", color=:orange, 
+                   title="Overlaid Histograms", xlabel="Value", ylabel="Frequency")
+
+        savefig("hist_price_intervals_$i.pdf")
 
     end    
 
