@@ -28,9 +28,11 @@ end
 
 function plot_profitability_leader_price(res)
 
+    ranges = [(:auto, :auto), (:auto, 1.25), (:auto, :auto)]
+
     for (i, df) in enumerate(res)
 
-        println(df)
+        # println(df)
 
         ##  Demand function: (u_L - c_L) * (2 - u_L + 0.3 u_F)
 
@@ -39,9 +41,11 @@ function plot_profitability_leader_price(res)
 
         p = plot(df[!, "Leader's Price"],
                  df[!, "Profit"],
-                 title="Difference between leader and follower price",
-                 xlabel="Price interval",
-                 ylabel="Frequency")
+                 title = "Plot of how profitability changes with leader's price",
+                 xlabel = "Leader's price",
+                 ylabel = "Profit",
+                 ylims = ranges[i],
+                 seriestype = :scatter)
 
         savefig(p, "profitability_leader_price_$i.pdf")
 
