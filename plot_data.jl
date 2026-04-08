@@ -32,7 +32,7 @@ function plot_profitability_leader_price(res)
 
     for (i, df) in enumerate(res)
 
-        # println(df)
+        println(df)
 
         ##  Demand function: (u_L - c_L) * (2 - u_L + 0.3 u_F)
 
@@ -41,7 +41,7 @@ function plot_profitability_leader_price(res)
 
         p = plot(df[!, "Leader's Price"],
                  df[!, "Profit"],
-                 title = "Plot of how profitability changes with leader's price (MK$i)",
+                 title = "Profitability changes with leader's price (MK$i)",
                  xlabel = "Leader's price",
                  ylabel = "Profit",
                  ylims = ranges[i],
