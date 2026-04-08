@@ -28,7 +28,7 @@ end
 
 function plot_profitability_leader_price(res)
 
-    ranges = [(:auto, :auto), (:auto, 1.25), (:auto, :auto)]
+    ranges = [(:auto, :auto), (:auto, 1), (:auto, :auto)]
 
     for (i, df) in enumerate(res)
 
@@ -41,7 +41,7 @@ function plot_profitability_leader_price(res)
 
         p = plot(df[!, "Leader's Price"],
                  df[!, "Profit"],
-                 title = "Plot of how profitability changes with leader's price",
+                 title = "Plot of how profitability changes with leader's price (MK$i)",
                  xlabel = "Leader's price",
                  ylabel = "Profit",
                  ylims = ranges[i],
