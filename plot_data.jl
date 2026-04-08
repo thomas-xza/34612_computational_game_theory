@@ -21,34 +21,31 @@ function main()
 
     end
 
-    plot_prices_as_intervals(res)
+    plot_profitability_leader_price(res)
 
 end
 
 
-function plot_prices_as_intervals(res)
-
-    ranges = [
-        (0.2:0.01:0.7),
-        (-1.5:0.03:0.5),
-        (-2:0.02:-1)
-    ]
+function plot_profitability_leader_price(res)
 
     for (i, df) in enumerate(res)
 
-        h_a = fit(Histogram, df[!, "Leader's Price"], nbins = 10)
-        h_b = fit(Histogram, df[!, "Follower's Price"], nbins = 10)
+        println(df)
 
-        println("Column A Edges: ", h_a.edges[1])
-        println("Column A Counts: ", h_a.weights)
+        ##  Demand function: (u_L - c_L) * (2 - u_L + 0.3 u_F)
 
-        histogram(df[!, "Leader's Price"], bins=15, alpha=0.5, label="Leader's", color=:blue)
-        histogram!(df[!, "Follower's Price"], bins=15, alpha=0.5, label="Follower's", color=:orange, 
-                   title="Overlaid Histograms", xlabel="Value", ylabel="Frequency")
+        transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
+            ((lp, fp, c) -> (lp .- c) .* (2 .- lp .+ 0.3 .* fp)) => "Profit")
 
-        savefig("hist_price_intervals_$i.pdf")
+        p = plot(df[!, "Leader's Price"],
+                 df[!, "Profit"],
+                 title="Difference between leader and follower price",
+                 xlabel="Price interval",
+                 ylabel="Frequency")
 
-    end    
+        savefig(p, "profitability_leader_price_$i.pdf")
+
+    end
 
 end
 
@@ -68,7 +65,7 @@ function plot_distrib_charts_by_time_outer_loop(res)
 end
 
 
-function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String, step:: Float64)
+function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String, step :: Float64)
     
     absolute_min = min(minimum(df_full[!, "Leader's Price"]), minimum(df_full[!, "Follower's Price"]))
 
