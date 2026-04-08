@@ -34,10 +34,10 @@ function plot_prices_as_intervals(res)
         (-2:0.02:-1)
     ]
 
-       for (i, df) in enumerate(res)
+    for (i, df) in enumerate(res)
  
         h = histogram(df[!, "Leader's Price"],
-                      bins=ranges[i],
+                      # bins=ranges[i],
                       xlabel="Price interval",
                       ylabel="Frequency")
 
