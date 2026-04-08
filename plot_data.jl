@@ -21,7 +21,29 @@ function main()
 
     end
 
-    plot_distrib_charts_by_time_outer_loop(res)
+    plot_prices_as_intervals(res)
+
+end
+
+
+function plot_prices_as_intervals(res)
+
+    ranges = [
+        (0.2:0.01:0.7),
+        (-1.5:0.03:0.5),
+        (-2:0.02:-1)
+    ]
+
+       for (i, df) in enumerate(res)
+ 
+        h = histogram(df[!, "Leader's Price"],
+                      bins=ranges[i],
+                      xlabel="Price interval",
+                      ylabel="Frequency")
+
+        savefig(h, "hist_price_intervals_$i.pdf")
+
+    end    
 
 end
 
