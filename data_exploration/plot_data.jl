@@ -27,20 +27,33 @@ function main()
 
     end
 
-    plot_time_profitability_1st_deriv(
-        res,
-        parse(Int, ARGS[1])
-    )
+    # plot_time_profitability_1st_deriv(
+    #     res,
+    #     parse(Int, ARGS[1])
+    # )
 
-    plot_profitability_leader_price_2nd_deriv(
-        res,
-        parse(Int, ARGS[1])
-    )
+    # plot_profitability_leader_price_2nd_deriv(
+    #     res,
+    #     parse(Int, ARGS[1])
+    # )
     
-    plot_profitability_leader_price_1st_deriv(
-        res,
-        parse(Int, ARGS[1])
-    )
+    # plot_profitability_leader_price_1st_deriv(
+    #     res,
+    #     parse(Int, ARGS[1])
+    # )
+    
+    # plot_profitability_leader_price(
+    #     res,
+    #     parse(Int, ARGS[1])
+    # )
+    
+    plot_distrib_charts_by_time_outer_loop(res)
+
+    plot_distrib_charts(res)
+    
+    plot_line_charts(res)
+    
+    plot_diff_data(res)
     
 end
 
@@ -143,7 +156,7 @@ function plot_time_profitability_1st_deriv(res, n :: Int)
                  label="MK$(i)",
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_1st_deriv_last_$(n)_avg.svg")
+        savefig(p, "profitability_time_pdf_demand_model.svg")
 
     end
 
@@ -358,7 +371,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         legend = :outertopright
     )
     
-    savefig(gb, "price_distribs_split_mk$file_prefix.svg")
+    savefig(gb, "price_distribs_split_mk$(file_prefix).svg")
 
 end
 
@@ -372,7 +385,7 @@ function split_df_by_time(df, n)
 end
 
 
-function plot_distrib_charts(res, file_prefix)
+function plot_distrib_charts(res)
 
     for (i, df) in enumerate(res)
 
@@ -410,7 +423,7 @@ function plot_distrib_charts(res, file_prefix)
                         )
                         # bar_width = 0.7)
  
-        savefig(gb, "price_distribs_mk$file_prefix$i.svg")
+        savefig(gb, "price_distribs_mk$(i).svg")
 
     end
 
@@ -449,7 +462,7 @@ function plot_line_charts(res)
               ylims = max_y_lims[i]
               )
  
-        savefig(p, "lines_changes_time_mk$i.svg")
+        savefig(p, "lines_prices_time_mk$(i).svg")
 
     end    
 
@@ -474,7 +487,7 @@ function plot_diff_data(res)
                       xlabel="Price interval",
                       ylabel="Frequency")
 
-        savefig(h, "hist_$i.svg")
+        savefig(h, "hist_leader_follower_price_diff_$(i).svg")
 
     end
 
