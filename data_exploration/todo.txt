@@ -1,0 +1,2 @@
+
+Fix scales on 1st, 2nd deriv graphs, to be consistent across averages.
