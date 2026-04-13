@@ -27,14 +27,17 @@ function main()
 
     end
 
-    plot_profitability_leader_price_deriv(res)
+    plot_profitability_leader_price_deriv(
+        res,
+        parse(Int, ARGS[1])
+    )
     
 end
 
 
 function plot_profitability_leader_price_2nd_deriv(res)
 
-    ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
+    ranges = [(:auto, :auto), (:auto, :auto), (:auto, :auto)]
 
     for (i, df) in enumerate(res)
 
@@ -60,14 +63,14 @@ function plot_profitability_leader_price_2nd_deriv(res)
                  label="MK$(i)",
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_deriv_last_25_avg.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_2nd_deriv.pdf")
 
     end
 
 end
 
 
-function plot_profitability_leader_price_deriv(res)
+function plot_profitability_leader_price_deriv(res, n :: Int)
 
     ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
 
@@ -82,24 +85,24 @@ function plot_profitability_leader_price_deriv(res)
 
         df[!, "Leader's Price diff"] = [0; diff(df[!, "Leader's Price"])]
 
-        df[!, "Leader's Price last 25 avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price diff"], 25))
+        df[!, "Leader's Price last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price diff"], n))
  
         df[!, "Profit diff"] = [0; diff(df[!, "Profit"])]
 
-        df[!, "Profit last 25 avg."] = Float64.(rolling_sum_n(df[!, "Profit diff"], 25))
+        df[!, "Profit last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Profit diff"], n))
  
-        println(df)
+        # println(df)
 
-        p = plot(df[!, "Leader's Price last 25 avg."],
-                 df[!, "Profit last 25 avg."],
-                 title = "Avg. of last 25 differences: profitability, leader's price",
-                 xlabel = "Leader's price diff25",
-                 ylabel = "Profit diff25",
+        p = plot(df[!, "Leader's Price last $(n) avg."],
+                 df[!, "Profit last $(n) avg."],
+                 title = "Avg. of last $(n) differences: profitability, leader's price",
+                 xlabel = "Leader's price, avg. of last $(n) diff",
+                 ylabel = "Profit diff, avg. of last $(n) diff.",
                  ylims = ranges[i],
                  label="MK$(i)",
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_deriv_last_25_avg.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_deriv_avg_of_last_$(n)_diff.pdf")
 
     end
 
@@ -116,7 +119,7 @@ function rolling_sum_n(v, n :: Int)
         
             res[i] += v[i - j]
 
-            println(res[i])
+            # println(res[i])
 
         end
 
