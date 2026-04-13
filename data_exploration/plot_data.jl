@@ -27,10 +27,15 @@ function main()
 
     end
 
-    # plot_profitability_leader_price_2nd_deriv(
-    #     res,
-    #     parse(Int, ARGS[1])
-    # )
+    plot_time_profitability_1st_deriv(
+        res,
+        parse(Int, ARGS[1])
+    )
+
+    plot_profitability_leader_price_2nd_deriv(
+        res,
+        parse(Int, ARGS[1])
+    )
     
     plot_profitability_leader_price_1st_deriv(
         res,
@@ -49,19 +54,19 @@ function plot_profitability_leader_price_2nd_deriv(res, n :: Int)
         transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
             ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
 
-        df[!, "Leader's Price diff"] = [0; diff(df[!, "Leader's Price"])]
+        df[!, "Leader's Price 1st deriv"] = [0; diff(df[!, "Leader's Price"])]
  
-        df[!, "Leader's Price 2nd deriv"] = [0; diff(df[!, "Leader's Price diff"])]
+        df[!, "Leader's Price 2nd deriv"] = [0; diff(df[!, "Leader's Price 1st deriv"])]
  
         df[!, "Leader's Price 2nd deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price 2nd deriv"], n))
  
-        df[!, "Profit diff"] = [0; diff(df[!, "Profit"])]
+        df[!, "Profit 1st deriv"] = [0; diff(df[!, "Profit"])]
 
-        df[!, "Profit 2nd deriv"] = [0; diff(df[!, "Profit diff"])]
+        df[!, "Profit 2nd deriv"] = [0; diff(df[!, "Profit 1st deriv"])]
  
         df[!, "Profit 2nd deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Profit 2nd deriv"], n))
  
-        # println(df)
+        println(df)
 
         p = plot(df[!, "Leader's Price 2nd deriv last $(n) avg."],
                  df[!, "Profit 2nd deriv last $(n) avg."],
@@ -72,7 +77,7 @@ function plot_profitability_leader_price_2nd_deriv(res, n :: Int)
                  label="MK$(i)",
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_2nd_deriv_last_$(n)_avg.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_2nd_deriv_last_$(n)_avg.svg")
 
     end
 
@@ -107,12 +112,42 @@ function plot_profitability_leader_price_1st_deriv(res, n :: Int)
                  label="MK$(i)",
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_1st_deriv_last_$(n)_avg.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_1st_deriv_last_$(n)_avg.svg")
 
     end
 
 end
 
+
+function plot_time_profitability_1st_deriv(res, n :: Int)
+
+    ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
+
+    for (i, df) in enumerate(res)
+
+        transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
+            ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
+
+        df[!, "Profit 1st deriv"] = [0; diff(df[!, "Profit"])]
+
+        df[!, "Profit 1st deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Profit 1st deriv"], n))
+ 
+        println(df)
+
+        p = plot(df[!, "Date"],
+                 df[!, "Profit 1st deriv last $(n) avg."],
+                 title = "1st derivative averages over time for: profitability",
+                 xlabel = "Date",
+                 ylabel = "Profit 1st deriv last $(n) avg.",
+                 ylims = ranges[i],
+                 label="MK$(i)",
+                 seriestype = :scatter)
+
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_1st_deriv_last_$(n)_avg.svg")
+
+    end
+
+end
 
 
 
@@ -134,7 +169,7 @@ function plot_profitability_leader_price(res, n :: Int)
                  label="MK$(i)",
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand.svg")
 
     end
 
@@ -187,7 +222,7 @@ function plot_profitability_over_time(res)
                  ylims = ranges[i],
                  seriestype = :line)
 
-        savefig(p, "profitability_over_time_$(i)_pdf_demand_model.pdf")
+        savefig(p, "profitability_over_time_$(i)_pdf_demand_model.svg")
 
     end
 
@@ -217,7 +252,7 @@ function plot_profitability_leader_price(res)
                  ylims = ranges[i],
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model.svg")
 
     end
 
@@ -323,7 +358,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         legend = :outertopright
     )
     
-    savefig(gb, "price_distribs_split_mk$file_prefix.pdf")
+    savefig(gb, "price_distribs_split_mk$file_prefix.svg")
 
 end
 
@@ -375,7 +410,7 @@ function plot_distrib_charts(res, file_prefix)
                         )
                         # bar_width = 0.7)
  
-        savefig(gb, "price_distribs_mk$file_prefix$i.pdf")
+        savefig(gb, "price_distribs_mk$file_prefix$i.svg")
 
     end
 
@@ -414,7 +449,7 @@ function plot_line_charts(res)
               ylims = max_y_lims[i]
               )
  
-        savefig(p, "lines_changes_time_mk$i.pdf")
+        savefig(p, "lines_changes_time_mk$i.svg")
 
     end    
 
@@ -439,7 +474,7 @@ function plot_diff_data(res)
                       xlabel="Price interval",
                       ylabel="Frequency")
 
-        savefig(h, "hist_$i.pdf")
+        savefig(h, "hist_$i.svg")
 
     end
 
