@@ -28,8 +28,8 @@ function main()
     end
 
     plot_profitability_leader_price_2nd_deriv(
-        res# ,
-        # parse(Int, ARGS[1])
+        res,
+        parse(Int, ARGS[1])
     )
     
     # plot_profitability_leader_price_deriv(
@@ -40,7 +40,7 @@ function main()
 end
 
 
-function plot_profitability_leader_price_2nd_deriv(res)
+function plot_profitability_leader_price_2nd_deriv(res, n :: Int)
 
     ranges = [(:auto, :auto), (:auto, :auto), (:auto, :auto)]
 
@@ -53,22 +53,26 @@ function plot_profitability_leader_price_2nd_deriv(res)
  
         df[!, "Leader's Price 2nd deriv"] = [0; diff(df[!, "Leader's Price diff"])]
  
+        df[!, "Leader's Price 2nd deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price 2nd deriv"], n))
+ 
         df[!, "Profit diff"] = [0; diff(df[!, "Profit"])]
 
         df[!, "Profit 2nd deriv"] = [0; diff(df[!, "Profit diff"])]
  
+        df[!, "Profit 2nd deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Profit 2nd deriv"], n))
+ 
         # println(df)
 
-        p = plot(df[!, "Leader's Price 2nd deriv"],
-                 df[!, "Profit 2nd deriv"],
+        p = plot(df[!, "Leader's Price 2nd deriv last $(n) avg."],
+                 df[!, "Profit 2nd deriv last $(n) avg."],
                  title = "2nd derivatives: profitability, leader's price",
-                 xlabel = "Leader's price 2nd deriv.",
-                 ylabel = "Profit 2nd deriv.",
+                 xlabel = "Leader's price 2nd deriv. last $(n) avg.",
+                 ylabel = "Profit 2nd deriv. last $(n) avg.",
                  ylims = ranges[i],
                  label="MK$(i)",
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_2nd_deriv.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_2nd_deriv_last_$(n)_avg.pdf")
 
     end
 
