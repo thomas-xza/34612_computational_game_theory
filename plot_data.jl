@@ -42,23 +42,23 @@ function plot_profitability_leader_price_deriv(res)
 
         df[!, "Leader's Price diff"] = [0; diff(df[!, "Leader's Price"])]
 
-        df[!, "Leader's Price last 3 avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price diff"], 3))
+        df[!, "Leader's Price last 10 avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price diff"], 10))
  
         df[!, "Profit diff"] = [0; diff(df[!, "Profit"])]
 
-        df[!, "Profit last 3 avg."] = Float64.(rolling_sum_n(df[!, "Profit diff"], 3))
+        df[!, "Profit last 10 avg."] = Float64.(rolling_sum_n(df[!, "Profit diff"], 10))
  
         println(df)
 
-        p = plot(df[!, "Leader's Price last 3 avg."],
-                 df[!, "Profit last 3 avg."],
-                 title = "Correlation between last 3 differences in profitability and leader's price (MK$i)",
-                 xlabel = "Leader's price diff3",
-                 ylabel = "Profit diff3",
+        p = plot(df[!, "Leader's Price last 10 avg."],
+                 df[!, "Profit last 10 avg."],
+                 title = "Correlation between last 10 differences in profitability and leader's price (MK$i)",
+                 xlabel = "Leader's price diff10",
+                 ylabel = "Profit diff10",
                  ylims = ranges[i],
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_deriv_last_3_avg.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_deriv_last_10_avg.pdf")
 
     end
 
