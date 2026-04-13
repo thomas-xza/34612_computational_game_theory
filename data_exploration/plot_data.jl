@@ -27,10 +27,15 @@ function main()
 
     end
 
-    plot_profitability_leader_price_deriv(
-        res,
-        parse(Int, ARGS[1])
+    plot_profitability_leader_price_2nd_deriv(
+        res# ,
+        # parse(Int, ARGS[1])
     )
+    
+    # plot_profitability_leader_price_deriv(
+    #     res,
+    #     parse(Int, ARGS[1])
+    # )
     
 end
 
@@ -52,10 +57,10 @@ function plot_profitability_leader_price_2nd_deriv(res)
 
         df[!, "Profit 2nd deriv"] = [0; diff(df[!, "Profit diff"])]
  
-        println(df)
+        # println(df)
 
-        p = plot(df[!, "Leader's Price 2nd deriv."],
-                 df[!, "Profit 2nd deriv."],
+        p = plot(df[!, "Leader's Price 2nd deriv"],
+                 df[!, "Profit 2nd deriv"],
                  title = "2nd derivatives: profitability, leader's price",
                  xlabel = "Leader's price 2nd deriv.",
                  ylabel = "Profit 2nd deriv.",
@@ -76,33 +81,56 @@ function plot_profitability_leader_price_deriv(res, n :: Int)
 
     for (i, df) in enumerate(res)
 
-        ##  Demand function (in Jupyter): (u_L - c_L) * (2 - u_L + 0.3 u_F)
-
-        ##  Demand function (in spec): (u_L - c_L) * (100 - 5 * u_L + 3 * u_F)
-
         transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
             ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
 
-        df[!, "Leader's Price diff"] = [0; diff(df[!, "Leader's Price"])]
+        df[!, "Leader's Price changes"] = [0; diff(df[!, "Leader's Price"])]
 
-        df[!, "Leader's Price last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price diff"], n))
+        df[!, "Leader's Price last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price changes"], n))
  
-        df[!, "Profit diff"] = [0; diff(df[!, "Profit"])]
+        df[!, "Profit changes"] = [0; diff(df[!, "Profit"])]
 
-        df[!, "Profit last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Profit diff"], n))
+        df[!, "Profit last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Profit changes"], n))
  
         # println(df)
 
         p = plot(df[!, "Leader's Price last $(n) avg."],
                  df[!, "Profit last $(n) avg."],
-                 title = "Avg. of last $(n) differences: profitability, leader's price",
-                 xlabel = "Leader's price, avg. of last $(n) diff",
-                 ylabel = "Profit diff, avg. of last $(n) diff.",
+                 title = "Avg. of last $(n) changes: profitability, leader's price",
+                 xlabel = "Leader's price avg. of last $(n) changes",
+                 ylabel = "Profit avg. of last $(n) changes.",
                  ylims = ranges[i],
                  label="MK$(i)",
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_deriv_avg_of_last_$(n)_diff.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_deriv_avg_of_last_$(n)_changes.pdf")
+
+    end
+
+end
+
+
+
+
+function plot_profitability_leader_price(res, n :: Int)
+
+    ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
+
+    for (i, df) in enumerate(res)
+
+        transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
+            ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
+
+        p = plot(df[!, "Leader's Price"],
+                 df[!, "Profit"],
+                 title = "Correaltion betweenn leader's price and profit",
+                 xlabel = "Leader's price",
+                 ylabel = "Profit",
+                 ylims = ranges[i],
+                 label="MK$(i)",
+                 seriestype = :scatter)
+
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand.pdf")
 
     end
 
