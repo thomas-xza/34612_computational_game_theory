@@ -44,7 +44,7 @@ function plot_profitability_over_time(res)
         p = plot(df[!, "Date"],
                  df[!, "Profit"],
                  title = "Correlation between profitability and date (MK$i)",
-                 xlabel = "Leader's price",
+                 xlabel = "Date",
                  ylabel = "Profit",
                  ylims = ranges[i],
                  seriestype = :line)
