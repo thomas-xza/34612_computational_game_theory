@@ -27,15 +27,15 @@ function main()
 
     end
 
-    plot_profitability_leader_price_2nd_deriv(
-        res,
-        parse(Int, ARGS[1])
-    )
-    
-    # plot_profitability_leader_price_deriv(
+    # plot_profitability_leader_price_2nd_deriv(
     #     res,
     #     parse(Int, ARGS[1])
     # )
+    
+    plot_profitability_leader_price_1st_deriv(
+        res,
+        parse(Int, ARGS[1])
+    )
     
 end
 
@@ -65,7 +65,7 @@ function plot_profitability_leader_price_2nd_deriv(res, n :: Int)
 
         p = plot(df[!, "Leader's Price 2nd deriv last $(n) avg."],
                  df[!, "Profit 2nd deriv last $(n) avg."],
-                 title = "2nd derivatives: profitability, leader's price",
+                 title = "2nd derivative averages: profitability, leader's price",
                  xlabel = "Leader's price 2nd deriv. last $(n) avg.",
                  ylabel = "Profit 2nd deriv. last $(n) avg.",
                  ylims = ranges[i],
@@ -79,7 +79,7 @@ function plot_profitability_leader_price_2nd_deriv(res, n :: Int)
 end
 
 
-function plot_profitability_leader_price_deriv(res, n :: Int)
+function plot_profitability_leader_price_1st_deriv(res, n :: Int)
 
     ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
 
@@ -88,26 +88,26 @@ function plot_profitability_leader_price_deriv(res, n :: Int)
         transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
             ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
 
-        df[!, "Leader's Price changes"] = [0; diff(df[!, "Leader's Price"])]
+        df[!, "Leader's Price 1st deriv"] = [0; diff(df[!, "Leader's Price"])]
 
-        df[!, "Leader's Price last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price changes"], n))
+        df[!, "Leader's Price 1st deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price 1st deriv"], n))
  
-        df[!, "Profit changes"] = [0; diff(df[!, "Profit"])]
+        df[!, "Profit 1st deriv"] = [0; diff(df[!, "Profit"])]
 
-        df[!, "Profit last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Profit changes"], n))
+        df[!, "Profit 1st deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Profit 1st deriv"], n))
  
-        # println(df)
+        println(df)
 
-        p = plot(df[!, "Leader's Price last $(n) avg."],
-                 df[!, "Profit last $(n) avg."],
-                 title = "Avg. of last $(n) changes: profitability, leader's price",
-                 xlabel = "Leader's price avg. of last $(n) changes",
-                 ylabel = "Profit avg. of last $(n) changes.",
+        p = plot(df[!, "Leader's Price 1st deriv last $(n) avg."],
+                 df[!, "Profit 1st deriv last $(n) avg."],
+                 title = "1st derivative averages: profitability, leader's price",
+                 xlabel = "Leader's price 1st deriv last $(n) avg.",
+                 ylabel = "Profit 1st deriv last $(n) avg.",
                  ylims = ranges[i],
                  label="MK$(i)",
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_deriv_avg_of_last_$(n)_changes.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_1st_deriv_last_$(n)_avg.pdf")
 
     end
 
