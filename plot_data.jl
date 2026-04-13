@@ -2,9 +2,10 @@
 using Pkg
 
 # Pkg.add(["XLSX", "DataFrames", "Plots", "StatsPlots", "StatsBase", "Colors"])
+# Pkg.add(["ShiftedArrays"])
 
 using XLSX
-using Plots, StatsPlots, DataFrames, StatsBase, Colors
+using Plots, StatsPlots, DataFrames, StatsBase, Colors, ShiftedArrays
 
 
 function main()
@@ -21,7 +22,41 @@ function main()
 
     end
 
-    plot_profitability_over_time(res)
+    plot_profitability_leader_price_deriv(res)
+    
+end
+
+
+function plot_profitability_leader_price_deriv(res)
+
+    ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
+
+    for (i, df) in enumerate(res)
+
+        ##  Demand function (in Jupyter): (u_L - c_L) * (2 - u_L + 0.3 u_F)
+
+        ##  Demand function (in spec): (u_L - c_L) * (100 - 5 * u_L + 3 * u_F)
+
+        transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
+            ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
+
+        df[!, "Leader's Price diff"] = [0; diff(df[!, "Leader's Price"])]
+
+        df[!, "Profit diff"] = [0; diff(df[!, "Profit"])]
+ 
+        println(df)
+
+        p = plot(df[!, "Leader's Price diff"],
+                 df[!, "Profit diff"],
+                 title = "Correlation between profitability and leader's price (MK$i)",
+                 xlabel = "Leader's price",
+                 ylabel = "Profit",
+                 ylims = ranges[i],
+                 seriestype = :scatter)
+
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_deriv.pdf")
+
+    end
 
 end
 
