@@ -21,7 +21,37 @@ function main()
 
     end
 
-    plot_profitability_leader_price(res)
+    plot_profitability_over_time(res)
+
+end
+
+
+function plot_profitability_over_time(res)
+
+    ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
+
+    for (i, df) in enumerate(res)
+
+        ##  Demand function (in Jupyter): (u_L - c_L) * (2 - u_L + 0.3 u_F)
+
+        ##  Demand function (in spec): (u_L - c_L) * (100 - 5 * u_L + 3 * u_F)
+
+        transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
+            ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
+
+        println(df)
+
+        p = plot(df[!, "Date"],
+                 df[!, "Profit"],
+                 title = "Correlation between profitability and date (MK$i)",
+                 xlabel = "Leader's price",
+                 ylabel = "Profit",
+                 ylims = ranges[i],
+                 seriestype = :line)
+
+        savefig(p, "profitability_over_time_$(i)_pdf_demand_model.pdf")
+
+    end
 
 end
 
