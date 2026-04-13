@@ -28,11 +28,9 @@ end
 
 function plot_profitability_leader_price(res)
 
-    ranges = [(:auto, :auto), (:auto, 1), (:auto, :auto)]
+    ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
 
     for (i, df) in enumerate(res)
-
-        println(df)
 
         ##  Demand function (in Jupyter): (u_L - c_L) * (2 - u_L + 0.3 u_F)
 
@@ -40,6 +38,8 @@ function plot_profitability_leader_price(res)
 
         transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
             ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
+
+        println(df)
 
         p = plot(df[!, "Leader's Price"],
                  df[!, "Profit"],
