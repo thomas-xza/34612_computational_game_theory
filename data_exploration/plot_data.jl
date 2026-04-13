@@ -8,6 +8,11 @@ using XLSX
 using Plots, StatsPlots, DataFrames, StatsBase, Colors, ShiftedArrays
 
 
+##  Demand function (in Jupyter): (u_L - c_L) * (2 - u_L + 0.3 u_F)
+
+##  Demand function (in spec): (u_L - c_L) * (100 - 5 * u_L + 3 * u_F)
+
+
 function main()
 
     res = DataFrame[]
@@ -24,6 +29,41 @@ function main()
 
     plot_profitability_leader_price_deriv(res)
     
+end
+
+
+function plot_profitability_leader_price_2nd_deriv(res)
+
+    ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
+
+    for (i, df) in enumerate(res)
+
+        transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
+            ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
+
+        df[!, "Leader's Price diff"] = [0; diff(df[!, "Leader's Price"])]
+ 
+        df[!, "Leader's Price 2nd deriv"] = [0; diff(df[!, "Leader's Price diff"])]
+ 
+        df[!, "Profit diff"] = [0; diff(df[!, "Profit"])]
+
+        df[!, "Profit 2nd deriv"] = [0; diff(df[!, "Profit diff"])]
+ 
+        println(df)
+
+        p = plot(df[!, "Leader's Price 2nd deriv."],
+                 df[!, "Profit 2nd deriv."],
+                 title = "2nd derivatives: profitability, leader's price",
+                 xlabel = "Leader's price 2nd deriv.",
+                 ylabel = "Profit 2nd deriv.",
+                 ylims = ranges[i],
+                 label="MK$(i)",
+                 seriestype = :scatter)
+
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_deriv_last_25_avg.pdf")
+
+    end
+
 end
 
 
@@ -52,10 +92,11 @@ function plot_profitability_leader_price_deriv(res)
 
         p = plot(df[!, "Leader's Price last 25 avg."],
                  df[!, "Profit last 25 avg."],
-                 title = "Avg. of last 25 differences: profitability, leader's price (MK$i)",
+                 title = "Avg. of last 25 differences: profitability, leader's price",
                  xlabel = "Leader's price diff25",
                  ylabel = "Profit diff25",
                  ylims = ranges[i],
+                 label="MK$(i)",
                  seriestype = :scatter)
 
         savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_deriv_last_25_avg.pdf")
