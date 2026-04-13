@@ -49,8 +49,8 @@ function plot_profitability_leader_price_deriv(res)
         p = plot(df[!, "Leader's Price diff"],
                  df[!, "Profit diff"],
                  title = "Correlation between profitability and leader's price (MK$i)",
-                 xlabel = "Leader's price",
-                 ylabel = "Profit",
+                 xlabel = "Leader's price diff",
+                 ylabel = "Profit diff",
                  ylims = ranges[i],
                  seriestype = :scatter)
 
