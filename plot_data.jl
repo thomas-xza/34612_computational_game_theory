@@ -34,10 +34,12 @@ function plot_profitability_leader_price(res)
 
         println(df)
 
-        ##  Demand function: (u_L - c_L) * (2 - u_L + 0.3 u_F)
+        ##  Demand function (in Jupyter): (u_L - c_L) * (2 - u_L + 0.3 u_F)
+
+        ##  Demand function (in spec): (u_L - c_L) * (100 - 5 * u_L + 3 * u_F)
 
         transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
-            ((lp, fp, c) -> (lp .- c) .* (2 .- lp .+ 0.3 .* fp)) => "Profit")
+            ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
 
         p = plot(df[!, "Leader's Price"],
                  df[!, "Profit"],
@@ -47,7 +49,7 @@ function plot_profitability_leader_price(res)
                  ylims = ranges[i],
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$i.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model.pdf")
 
     end
 
