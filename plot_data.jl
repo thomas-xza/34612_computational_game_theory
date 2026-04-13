@@ -43,7 +43,7 @@ function plot_profitability_leader_price(res)
 
         p = plot(df[!, "Leader's Price"],
                  df[!, "Profit"],
-                 title = "Profitability changes with leader's price (MK$i)",
+                 title = "Correlation between profitability and leader's price (MK$i)",
                  xlabel = "Leader's price",
                  ylabel = "Profit",
                  ylims = ranges[i],
