@@ -42,22 +42,49 @@ function plot_profitability_leader_price_deriv(res)
 
         df[!, "Leader's Price diff"] = [0; diff(df[!, "Leader's Price"])]
 
+        df[!, "Leader's Price last 3 avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price diff"], 3))
+ 
         df[!, "Profit diff"] = [0; diff(df[!, "Profit"])]
+
+        df[!, "Profit last 3 avg."] = Float64.(rolling_sum_n(df[!, "Profit diff"], 3))
  
         println(df)
 
-        p = plot(df[!, "Leader's Price diff"],
-                 df[!, "Profit diff"],
-                 title = "Correlation between profitability and leader's price (MK$i)",
-                 xlabel = "Leader's price diff",
-                 ylabel = "Profit diff",
+        p = plot(df[!, "Leader's Price last 3 avg."],
+                 df[!, "Profit last 3 avg."],
+                 title = "Correlation between last 3 differences in profitability and leader's price (MK$i)",
+                 xlabel = "Leader's price diff3",
+                 ylabel = "Profit diff3",
                  ylims = ranges[i],
                  seriestype = :scatter)
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_deriv.pdf")
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_deriv_last_3_avg.pdf")
 
     end
 
+end
+
+
+function rolling_sum_n(v, n :: Int)
+    
+    res = fill(Float64(0), length(v))
+
+    for i in n:length(v)
+
+        for j in 0:(n - 1)
+        
+            res[i] += v[i - j]
+
+            println(res[i])
+
+        end
+
+        res[i] = res[i] / n
+        
+    end
+    
+    return res
+    
 end
 
 
