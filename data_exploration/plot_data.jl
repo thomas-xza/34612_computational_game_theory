@@ -106,7 +106,7 @@ function plot_profitability_leader_price_2nd_deriv(res, n_set ::Vector{Int})
 
         # println(df)
         
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_2nd_deriv_avgs.svg")
+        savefig(p, "profitability_leader_price_MK$(i)_2nd_deriv_avgs_spec_demand_model.svg")
 
     end
 
@@ -151,7 +151,7 @@ function plot_profitability_leader_price_1st_deriv(res, n_set ::Vector{Int})
 
         end
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_1st_deriv_avg.svg")
+        savefig(p, "profitability_leader_price_MK$(i)_1st_deriv_avg_spec_demand_model.svg")
 
     end
 
@@ -192,7 +192,7 @@ function plot_time_profitability_1st_deriv(res, n_set ::Vector{Int})
 
         end
 
-        savefig(p, "profitability_1st_deriv_time_$(i)_pdf_demand_model.svg")
+        savefig(p, "profitability_1st_deriv_time_MK$(i)_spec_demand_model.svg")
 
     end
 
@@ -213,14 +213,14 @@ function plot_profitability_leader_price(res, n_set ::Vector{Int})
 
         p = plot(df[!, "Leader's Price"],
                  df[!, "Profit"],
-                 title = "Correaltion betweenn leader's price and profit",
+                 title = "Correaltion between leader's price and profit",
                  xlabel = "Leader's price",
                  ylabel = "Profit",
                  ylims = ranges[i],
                  label="MK$(i), batch $(n)",
                  seriestype = :scatter)
         
-        savefig(p, "profitability_leader_price_$(i)_$(n)_pdf_demand.svg")
+        savefig(p, "profitability_leader_price_MK$(i)_spec_demand.svg")
 
     end
 
