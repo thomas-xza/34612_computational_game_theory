@@ -5,7 +5,7 @@ using Pkg
 # Pkg.add(["ShiftedArrays"])
 
 using XLSX
-using Plots, StatsPlots, DataFrames, StatsBase, Colors, ShiftedArrays
+using Plots, StatsPlots, DataFrames, StatsBase, Colors, ShiftedArrays, JSON
 
 
 ##  Demand function (in Jupyter): (u_L - c_L) * (2 - u_L + 0.3 u_F)
@@ -27,40 +27,44 @@ function main()
 
     end
 
+    n_set = Vector{Int}(JSON.parse(ARGS[1]))
+
     # plot_time_profitability_1st_deriv(
     #     res,
-    #     parse(Int, ARGS[1])
+        # n_set
     # )
 
-    # plot_profitability_leader_price_2nd_deriv(
-    #     res,
-    #     parse(Int, ARGS[1])
-    # )
+    plot_profitability_leader_price_2nd_deriv(
+        res,
+        n_set
+    )
     
     # plot_profitability_leader_price_1st_deriv(
     #     res,
-    #     parse(Int, ARGS[1])
+        # n_set
     # )
     
     # plot_profitability_leader_price(
     #     res,
-    #     parse(Int, ARGS[1])
+        # n_set
     # )
     
-    plot_distrib_charts_by_time_outer_loop(res)
+    # plot_distrib_charts_by_time_outer_loop(res)
 
-    plot_distrib_charts(res)
+    # plot_distrib_charts(res)
     
-    plot_line_charts(res)
+    # plot_line_charts(res)
     
-    plot_diff_data(res)
+    # plot_diff_data(res)
     
 end
 
 
-function plot_profitability_leader_price_2nd_deriv(res, n :: Int)
+function plot_profitability_leader_price_2nd_deriv(res, n_set ::Vector{Int})
 
-    ranges = [(:auto, :auto), (:auto, :auto), (:auto, :auto)]
+    ranges_y = [(:auto, :auto), (-25, 25), (:auto, :auto)]
+
+    ranges_x = [(:auto, :auto), (-0.3, 0.2), (:auto, :auto)]
 
     for (i, df) in enumerate(res)
 
@@ -68,29 +72,37 @@ function plot_profitability_leader_price_2nd_deriv(res, n :: Int)
             ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
 
         df[!, "Leader's Price 1st deriv"] = [0; diff(df[!, "Leader's Price"])]
- 
+        
         df[!, "Leader's Price 2nd deriv"] = [0; diff(df[!, "Leader's Price 1st deriv"])]
- 
-        df[!, "Leader's Price 2nd deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price 2nd deriv"], n))
- 
+        
         df[!, "Profit 1st deriv"] = [0; diff(df[!, "Profit"])]
-
+        
         df[!, "Profit 2nd deriv"] = [0; diff(df[!, "Profit 1st deriv"])]
- 
-        df[!, "Profit 2nd deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Profit 2nd deriv"], n))
- 
-        println(df)
-
-        p = plot(df[!, "Leader's Price 2nd deriv last $(n) avg."],
-                 df[!, "Profit 2nd deriv last $(n) avg."],
-                 title = "2nd derivative averages: profitability, leader's price",
-                 xlabel = "Leader's price 2nd deriv. last $(n) avg.",
-                 ylabel = "Profit 2nd deriv. last $(n) avg.",
-                 ylims = ranges[i],
-                 label="MK$(i)",
+        
+        p = plot(title = "2nd derivative averages: profitability, leader's price",
+                 xlabel = "Leader's price 2nd deriv. avg.",
+                 ylabel = "Profit 2nd deriv. avg.",
+                 # xlims = ranges_x[i],
+                 # ylims = ranges_y[i],
                  seriestype = :scatter)
+        
+        for n in n_set
 
-        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_2nd_deriv_last_$(n)_avg.svg")
+            df[!, "Leader's Price 2nd deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Leader's Price 2nd deriv"], n))
+            
+            df[!, "Profit 2nd deriv last $(n) avg."] = Float64.(rolling_sum_n(df[!, "Profit 2nd deriv"], n))
+            
+            println(df)
+
+            plot!(p,
+                  df[!, "Leader's Price 2nd deriv last $(n) avg."],
+                  df[!, "Profit 2nd deriv last $(n) avg."],
+                  label="MK$(i), batch $(n)"
+                  )
+
+        end
+
+        savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_2nd_deriv_avgs.svg")
 
     end
 
@@ -99,7 +111,9 @@ end
 
 function plot_profitability_leader_price_1st_deriv(res, n :: Int)
 
-    ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
+    ranges_y = [(:auto, :auto), (-25, 25), (:auto, :auto)]
+
+    ranges_x = [(:auto, :auto), (-0.15, 0.15), (:auto, :auto)]
 
     for (i, df) in enumerate(res)
 
@@ -121,8 +135,9 @@ function plot_profitability_leader_price_1st_deriv(res, n :: Int)
                  title = "1st derivative averages: profitability, leader's price",
                  xlabel = "Leader's price 1st deriv last $(n) avg.",
                  ylabel = "Profit 1st deriv last $(n) avg.",
-                 ylims = ranges[i],
-                 label="MK$(i)",
+                 xlims = ranges_x[i],
+                 ylims = ranges_y[i],
+                 label="MK$(i), batch $(n)",
                  seriestype = :scatter)
 
         savefig(p, "profitability_leader_price_$(i)_pdf_demand_model_1st_deriv_last_$(n)_avg.svg")
@@ -134,7 +149,7 @@ end
 
 function plot_time_profitability_1st_deriv(res, n :: Int)
 
-    ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
+    ranges = [(:auto, :auto), (:auto, :auto), (:auto, :auto)]
 
     for (i, df) in enumerate(res)
 
@@ -153,10 +168,10 @@ function plot_time_profitability_1st_deriv(res, n :: Int)
                  xlabel = "Date",
                  ylabel = "Profit 1st deriv last $(n) avg.",
                  ylims = ranges[i],
-                 label="MK$(i)",
+                 label="MK$(i), batch $(n)",
                  seriestype = :scatter)
 
-        savefig(p, "profitability_time_pdf_demand_model.svg")
+        savefig(p, "profitability_time_$(i)_pdf_demand_model.svg")
 
     end
 
@@ -179,7 +194,7 @@ function plot_profitability_leader_price(res, n :: Int)
                  xlabel = "Leader's price",
                  ylabel = "Profit",
                  ylims = ranges[i],
-                 label="MK$(i)",
+                 label="MK$(i), batch $(n)",
                  seriestype = :scatter)
 
         savefig(p, "profitability_leader_price_$(i)_pdf_demand.svg")
