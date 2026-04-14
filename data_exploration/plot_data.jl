@@ -1,4 +1,8 @@
 
+
+##  Sample usage:
+##  $ julia plot_data.jl "[25, 10, 3, 1]"
+
 using Pkg
 
 # Pkg.add(["XLSX", "DataFrames", "Plots", "StatsPlots", "StatsBase", "Colors"])
@@ -81,9 +85,8 @@ function plot_profitability_leader_price_2nd_deriv(res, n_set ::Vector{Int})
         
         p = scatter(title = "2nd derivative averages: profitability, leader's price",
                  xlabel = "Leader's price 2nd deriv. avg.",
-                 ylabel = "Profit 2nd deriv. avg.",
-                 # xlims = ranges_x[i],
-                 # ylims = ranges_y[i],
+                    ylabel = "Profit 2nd deriv. avg.",
+                    alpha=0.5,
                  )
         
         for n in n_set
