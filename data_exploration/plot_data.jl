@@ -33,33 +33,33 @@ function main()
 
     n_set = Vector{Int}(JSON.parse(ARGS[1]))
 
-    plot_time_profitability_1st_deriv(
-        res,
-        n_set
-    )
+    # plot_time_profitability_1st_deriv(
+    #     res,
+    #     n_set
+    # )
     
-    plot_profitability_leader_price_1st_deriv(
-        res,
-        n_set
-    )
+    # plot_profitability_leader_price_1st_deriv(
+    #     res,
+    #     n_set
+    # )
     
-    plot_profitability_leader_price_2nd_deriv(
-        res,
-        n_set
-    )
+    # plot_profitability_leader_price_2nd_deriv(
+    #     res,
+    #     n_set
+    # )
 
-    plot_profitability_leader_price(
-        res,
-        n_set
-    )
+    # plot_profitability_leader_price(
+    #     res,
+    #     n_set
+    # )
     
-    # plot_distrib_charts_by_time_outer_loop(res)
+    plot_distrib_charts_by_time_outer_loop(res)
 
-    # plot_distrib_charts(res)
+    plot_distrib_charts(res)
     
-    # plot_line_charts(res)
+    plot_line_charts(res)
     
-    # plot_diff_data(res)
+    plot_diff_data(res)
     
 end
 
@@ -409,7 +409,7 @@ function plot_distrib_charts_by_time(df_full :: DataFrame, file_prefix :: String
         legend = :outertopright
     )
     
-    savefig(gb, "price_distribs_split_mk$(file_prefix).svg")
+    savefig(gb, "price_distribs_split_MK$(file_prefix).svg")
 
 end
 
@@ -461,7 +461,7 @@ function plot_distrib_charts(res)
                         )
                         # bar_width = 0.7)
  
-        savefig(gb, "price_distribs_mk$(i).svg")
+        savefig(gb, "price_distribs_MK$(i).svg")
 
     end
 
@@ -500,7 +500,7 @@ function plot_line_charts(res)
               ylims = max_y_lims[i]
               )
  
-        savefig(p, "lines_prices_time_mk$(i).svg")
+        savefig(p, "lines_prices_time_MK$(i).svg")
 
     end    
 
@@ -525,7 +525,7 @@ function plot_diff_data(res)
                       xlabel="Price interval",
                       ylabel="Frequency")
 
-        savefig(h, "hist_leader_follower_price_diff_$(i).svg")
+        savefig(h, "hist_leader_follower_price_diff_MK$(i).svg")
 
     end
 
