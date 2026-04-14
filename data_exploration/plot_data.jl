@@ -48,10 +48,10 @@ function main()
         n_set
     )
 
-    # plot_profitability_leader_price(
-    #     res,
-        # n_set
-    # )
+    plot_profitability_leader_price(
+        res,
+        n_set
+    )
     
     # plot_distrib_charts_by_time_outer_loop(res)
 
@@ -187,12 +187,12 @@ function plot_time_profitability_1st_deriv(res, n_set ::Vector{Int})
                 df[!, "Profit 1st deriv last $(n) avg."],                 
                 # ylims = ranges[i],
                 label="MK$(i), batch $(n)",
-                markeralpha = 0.3,
+                markeralpha = 0.6,
             )
 
         end
 
-        savefig(p, "profitability_time_$(i)_pdf_demand_model.svg")
+        savefig(p, "profitability_1st_deriv_time_$(i)_pdf_demand_model.svg")
 
     end
 
@@ -204,25 +204,23 @@ function plot_profitability_leader_price(res, n_set ::Vector{Int})
 
     ranges = [(:auto, :auto), (:auto, 90), (:auto, :auto)]
 
-    for n in n_set
+    n = 1
 
-        for (i, df) in enumerate(res)
+    for (i, df) in enumerate(res)
 
-            transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
-                ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
+        transform!(df, ["Leader's Price", "Follower's Price", "Cost"] =>
+            ((lp, fp, c) -> (lp .- c) .* (100 .- 5 .* lp .+ 3 .* fp)) => "Profit")
 
-            p = plot(df[!, "Leader's Price"],
-                     df[!, "Profit"],
-                     title = "Correaltion betweenn leader's price and profit",
-                     xlabel = "Leader's price",
-                     ylabel = "Profit",
-                     ylims = ranges[i],
-                     label="MK$(i), batch $(n)",
-                     seriestype = :scatter)
-            
-            savefig(p, "profitability_leader_price_$(i)_$(n)_pdf_demand.svg")
-
-        end
+        p = plot(df[!, "Leader's Price"],
+                 df[!, "Profit"],
+                 title = "Correaltion betweenn leader's price and profit",
+                 xlabel = "Leader's price",
+                 ylabel = "Profit",
+                 ylims = ranges[i],
+                 label="MK$(i), batch $(n)",
+                 seriestype = :scatter)
+        
+        savefig(p, "profitability_leader_price_$(i)_$(n)_pdf_demand.svg")
 
     end
 
