@@ -101,8 +101,7 @@ function plot_profitability_leader_price_2nd_deriv(res, n_set ::Vector{Int})
                   df[!, "Leader's Price 2nd deriv last $(n) avg."],
                   df[!, "Profit 2nd deriv last $(n) avg."],
                      label="MK$(i), batch $(n)",
-                     markeralpha=0.3,
-                     alpha = 0.5
+                     markeralpha=0.1,
                   )
 
         end
