@@ -79,12 +79,12 @@ function plot_profitability_leader_price_2nd_deriv(res, n_set ::Vector{Int})
         
         df[!, "Profit 2nd deriv"] = [0; diff(df[!, "Profit 1st deriv"])]
         
-        p = plot(title = "2nd derivative averages: profitability, leader's price",
+        p = scatter(title = "2nd derivative averages: profitability, leader's price",
                  xlabel = "Leader's price 2nd deriv. avg.",
                  ylabel = "Profit 2nd deriv. avg.",
                  # xlims = ranges_x[i],
                  # ylims = ranges_y[i],
-                 seriestype = :scatter)
+                 )
         
         for n in n_set
 
@@ -94,7 +94,7 @@ function plot_profitability_leader_price_2nd_deriv(res, n_set ::Vector{Int})
             
             println(df)
 
-            plot!(p,
+            scatter!(p,
                   df[!, "Leader's Price 2nd deriv last $(n) avg."],
                   df[!, "Profit 2nd deriv last $(n) avg."],
                   label="MK$(i), batch $(n)"
